@@ -7,5 +7,5 @@ My first python project (and one of my first ever) was a program that visualized
 An l-system is essentially a type of computation, that is, a series of re-writing rules from some inital condition. A program then interprets the final output of the computation as instructions of what to draw. [Here](http://paulbourke.net/fractals/lsys/) is a great resource for learning more.
 
 ## Running
-> python lsystem.py
+    python lsystem.py
 
