@@ -1,5 +1,7 @@
 import json
 import pyglet
+from pyglet import graphics
+from pyglet.graphics import vertexdomain
 
 import numpy as np
 

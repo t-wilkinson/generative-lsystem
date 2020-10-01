@@ -9,7 +9,6 @@ pyglet.graphics.vertexdomain.create_attribute_usage('v2f/stream')
 pyglet.graphics.vertexdomain.create_attribute_usage('c3B/stream')
 batch = pyglet.graphics.Batch()
 
-
 def sort(file):
     with open(file, 'r') as f:
         result = json.load(f)
@@ -140,11 +139,11 @@ class LSystem(pyglet.window.Window):
         start_time = time()
         while time() - start_time < draw_time:
 
-            self.clear()
+            # self.clear()
             for instance in self[instances]:
                 instance._set_line_width_()
                 instance._draw_()
-            self.flip()
+            # self.flip()
 
     def on_key_press(self, symbol, modifier):
         self.close()
@@ -155,6 +154,6 @@ class LSystem(pyglet.window.Window):
 
 
 if __name__ == '__main__':
-    lsystem = LSystem(fullscreen=False)
+    lsystem = LSystem(fullscreen=True)
     lsystem.setup()
     lsystem()
