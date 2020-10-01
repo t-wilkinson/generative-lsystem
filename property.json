@@ -1,0 +1,33 @@
+{
+    "default": {
+        "r": "x",
+        "g": "x",
+        "b": "x",
+        "iteration": 4,
+        "draw_time": 2.0,
+        "line_width": 1.0,
+        "start_pos": null,
+        "translation": [
+            [
+                0.0,
+                0.0
+            ],
+            [
+                0.0,
+                0.0
+            ]
+        ],
+        "rotation": [
+            0.0,
+            0.0
+        ],
+        "scale": [
+            0.0,
+            20.0
+        ],
+        "color": [
+            255.0,
+            0.0
+        ]
+    }
+}
