@@ -9,3 +9,5 @@ An l-system is essentially a type of computation, that is, a series of re-writin
 ## Running
     python lsystem.py
 
+> note: `/main.py` is an attempt to simplify the verbose code however I started moving on to other things around this time. I plan on fixing it once I move back to automata and other visualizations.
+
