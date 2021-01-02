@@ -1,10 +1,10 @@
 {
     "default": {
-        "r": "x",
-        "g": "x",
-        "b": "x",
+        "r": "255 - x",
+        "g": "x % 51 * 5",
+        "b": "x // 3",
         "iteration": 4,
-        "draw_time": 2.0,
+        "draw_time": 5.0,
         "line_width": 1.0,
         "start_pos": null,
         "translation": [

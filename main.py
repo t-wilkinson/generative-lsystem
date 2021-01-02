@@ -1,4 +1,7 @@
 import pyglet
+from pyglet import graphics
+from pyglet.graphics import vertexdomain
+
 import json
 import math
 import numpy as np
@@ -15,6 +18,11 @@ def sort(file):
     with open(file, 'w') as f:
         json.dump(dict(sorted(result.items())), f, indent=4)
     return result
+
+def wrap(kwargs, *keys, wrap):
+    for key in keys:
+        if key in kwargs:
+            kwargs[key] = wrap(kwargs[key])
 
 
 class _LSystem:
@@ -106,14 +114,7 @@ class LSystem(pyglet.window.Window):
 
         self.default = sort('property.json')[default]
         self.default['start_pos'] = self.default['start_pos'] or self.center
-
-        self.wrap('r', 'g', 'b', wrap=lambda func: eval('lambda x:' + func))
-        self.wrap('start_pos', 'translation', 'rotation', 'scale', 'color', wrap=np.array)
-
-        self.instances = {
-            name: _LSystem(system, self.default)
-            for (name, system) in sort('data.json').items()
-        }
+        self.wrap(self.default)
 
     def __iter__(self):
         return iter(self.instances)
@@ -125,25 +126,40 @@ class LSystem(pyglet.window.Window):
     def __getitem__(self, key):
         if isinstance(key, str):
             return self.instances.get(key)
-        return (self.instances.get(k) for k in key)
+        elif isinstance(key, tuple) and len(key) > 0:
+            return {k: self.instances.get(k) for k in key}
+        else:
+            return self.instances
 
-    def wrap(self, *keys, wrap):
-        for key in keys:
-            self.default[key] = wrap(self.default[key])
+    def wrap(self, obj):
+        wrap(obj, 'r', 'g', 'b', wrap=lambda func: eval('lambda x:' + func))
+        wrap(obj, 'start_pos', 'translation', 'rotation', 'scale', 'color', wrap=np.array)
 
-    def setup(self):
-        for instance in self.instances.values():
+    def setup(self, systems, kwargs):
+        self.wrap(kwargs)
+        args = {**self.default, **kwargs}
+        instances = {
+            name: _LSystem(system, args)
+            for (name, system) in sort('data.json').items()
+            if name in systems
+        }
+
+        for instance in instances.values():
             instance._setup_()
 
-    def __call__(self, *instances, draw_time=1):
-        start_time = time()
-        while time() - start_time < draw_time:
+        return (instances, args)
 
-            # self.clear()
-            for instance in self[instances]:
+    def __call__(self, *systems, **kwargs):
+        (instances, args) = self.setup(systems, kwargs)
+        start_time = time()
+
+        while time() - start_time < args['draw_time']:
+            self.clear()
+            for instance in instances.values():
                 instance._set_line_width_()
                 instance._draw_()
-            # self.flip()
+            self.flip()
+            self.dispatch_events()
 
     def on_key_press(self, symbol, modifier):
         self.close()
@@ -155,5 +171,6 @@ class LSystem(pyglet.window.Window):
 
 if __name__ == '__main__':
     lsystem = LSystem(fullscreen=True)
-    lsystem.setup()
-    lsystem()
+    lsystem('pentaplexity', 'cross')
+    lsystem('tiled_square')
+    lsystem('sierpinski_square')

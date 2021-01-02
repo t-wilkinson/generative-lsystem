@@ -100,7 +100,6 @@ class LSystem(metaclass=LSystemMeta):
         self.scale = scale
         self.color = color
 
-
     def __setattr__(self, attr, value):
         ''' Every time an attribute is changed, afrotationfect sub classes. '''
         super().__setattr__(attr, value)
