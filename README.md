@@ -1,13 +1,10 @@
 # Lindenmayer Systems (L-System)  Visualization
-My first python project (and one of my first ever) was a program that visualized simple fractals using a turtle (basic commands like forward, turn, pen up and pen down). As I learned more, I needed a way to express what I had learned and a new way to visualize fractals.
-
-## What is an L-System?
-An l-system is essentially a type of computation, that is, a series of re-writing rules from some inital condition. A program then interprets the final output of the computation as instructions of what to draw. [Here](http://paulbourke.net/fractals/lsys/) is a great resource for learning more.
+This project is a visualization of [l-systems](http://paulbourke.net/fractals/lsys/). There are two versions. The first was my first computer program which was accumulated over about a month as I learned how to program. The second version was my attempt to come back and simplify the process after I had become more competent. Program was tested using python 3.5.
 
 ## Running
 ```bash
-$ python lsystem.py
+python -m pip install --user -r requirements.txt
+python lsystem-v1.py
+python lsystem-v2.py
 ```
-
-> note: `/main.py` is an attempt to simplify the verbose code however I started moving on to other things around this time. I plan on fixing it once I move back to automata and other visualizations.
 

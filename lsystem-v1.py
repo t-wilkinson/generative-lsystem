@@ -2,9 +2,7 @@ import json
 import pyglet
 from pyglet import graphics
 from pyglet.graphics import vertexdomain
-
 import numpy as np
-
 from time import time
 
 pyglet.options['debug_gl', 'shadow_window'] = [False, False]
@@ -372,9 +370,9 @@ if __name__ == '__main__':
     LSystem.iteration = 3
     LSystem.scale = [0.0004, 0, -50]
     LSystem.color = [255, 0]
-    LSystem.r=lambda x: 255 - x
-    LSystem.g=lambda x: x % 51 * 5
-    LSystem.b=lambda x: x // 3
+    LSystem.r = lambda x: 255 - x
+    LSystem.g = lambda x: x % 51 * 5
+    LSystem.b = lambda x: x // 3
     LSystem.draw_time = 3
     LSystem.line_width = 7
 

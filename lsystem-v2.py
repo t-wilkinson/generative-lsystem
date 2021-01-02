@@ -1,15 +1,14 @@
 import pyglet
 from pyglet import graphics
 from pyglet.graphics import vertexdomain
-
 import json
 import math
 import numpy as np
 from time import time
 
 pyglet.options['debug_gl', 'shadow_window'] = [False, False]
-pyglet.graphics.vertexdomain.create_attribute_usage('v2f/stream')
-pyglet.graphics.vertexdomain.create_attribute_usage('c3B/stream')
+vertexdomain.create_attribute_usage('v2f/stream')
+vertexdomain.create_attribute_usage('c3B/stream')
 batch = pyglet.graphics.Batch()
 
 def sort(file):
@@ -25,13 +24,13 @@ def wrap(kwargs, *keys, wrap):
             kwargs[key] = wrap(kwargs[key])
 
 
-class _LSystem:
+class _LSystem_:
     def __init__(self, data, default):
         self.__dict__ = {**data, **default}
         self.theta = np.radians(self.theta)
 
     def __repr__(self):
-        return f'_LSystem{self.axiom, self.rules, round(math.degrees(self.theta))}'
+        return f'_LSystem_{self.axiom, self.rules, round(math.degrees(self.theta))}'
     __str__ = __repr__
 
     def _setup_(self):
@@ -57,10 +56,11 @@ class _LSystem:
         verts = np.array([operations.get(char, 0) for char in self.word], dtype=np.float_)
         verts = np.cumsum(verts)[:, np.newaxis]
         verts = np.hstack((np.cos(verts), np.sin(verts)))
+        verts = np.cumsum(verts, axis=0)
 
         # sum across array to get vertices
-        self.verts = np.cumsum(verts, axis=0)
-        self.center = np.average(self.verts, axis=0)
+        self.center = np.average(verts, axis=0)
+        self.verts = verts
 
     def _set_rgb_(self):
         rgb = np.arange(len(self.word), dtype=np.uint8)[:, np.newaxis]
@@ -112,7 +112,8 @@ class LSystem(pyglet.window.Window):
     def __init__(self, default='default', **kwargs):
         super().__init__(vsync=False, **kwargs)
 
-        self.default = sort('property.json')[default]
+        with open('property.json', 'r') as f:
+            self.default = json.load(f)[default]
         self.default['start_pos'] = self.default['start_pos'] or self.center
         self.wrap(self.default)
 
@@ -131,15 +132,27 @@ class LSystem(pyglet.window.Window):
         else:
             return self.instances
 
+    def __call__(self, *systems, **kwargs):
+        (instances, parameters) = self.setup(systems, kwargs)
+        start_time = time()
+
+        while time() - start_time < parameters['draw_time']:
+            self.clear()
+            for instance in instances.values():
+                instance._set_line_width_()
+                instance._draw_()
+            self.flip()
+            self.dispatch_events()
+
     def wrap(self, obj):
         wrap(obj, 'r', 'g', 'b', wrap=lambda func: eval('lambda x:' + func))
         wrap(obj, 'start_pos', 'translation', 'rotation', 'scale', 'color', wrap=np.array)
 
     def setup(self, systems, kwargs):
         self.wrap(kwargs)
-        args = {**self.default, **kwargs}
+        parameters = {**self.default, **kwargs}
         instances = {
-            name: _LSystem(system, args)
+            name: _LSystem_(system, parameters)
             for (name, system) in sort('data.json').items()
             if name in systems
         }
@@ -147,19 +160,7 @@ class LSystem(pyglet.window.Window):
         for instance in instances.values():
             instance._setup_()
 
-        return (instances, args)
-
-    def __call__(self, *systems, **kwargs):
-        (instances, args) = self.setup(systems, kwargs)
-        start_time = time()
-
-        while time() - start_time < args['draw_time']:
-            self.clear()
-            for instance in instances.values():
-                instance._set_line_width_()
-                instance._draw_()
-            self.flip()
-            self.dispatch_events()
+        return (instances, parameters)
 
     def on_key_press(self, symbol, modifier):
         self.close()
@@ -172,5 +173,5 @@ class LSystem(pyglet.window.Window):
 if __name__ == '__main__':
     lsystem = LSystem(fullscreen=True)
     lsystem('pentaplexity', 'cross')
-    lsystem('tiled_square')
+    lsystem('tiled_square', rotation=[0.0, -0.001])
     lsystem('sierpinski_square')
