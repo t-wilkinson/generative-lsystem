@@ -3,6 +3,8 @@ This project is a visualization of [Lindenmayer Systems (l-systems)](http://paul
 
 Program was tested using python 3.5. The project uses `pyglet` for OpenGL integration and `numpy` for array operations.
 
+`data.json` contains information to build lsystems and is used by both versions. `property.json` stores default settings for visualizing lsystems and is used by the newer version.
+
 # Running
 ```bash
 python -m pip install --user -r requirements.txt
