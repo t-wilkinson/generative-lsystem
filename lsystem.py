@@ -169,9 +169,3 @@ class LSystem(pyglet.window.Window):
     def center(self):
         return [self.width / 2, self.height / 2]
 
-
-if __name__ == '__main__':
-    lsystem = LSystem(fullscreen=True)
-    lsystem('pentaplexity', 'cross')
-    lsystem('tiled_square', rotation=[0.0, -0.001])
-    lsystem('sierpinski_square')

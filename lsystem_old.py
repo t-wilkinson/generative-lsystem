@@ -139,10 +139,10 @@ class LSystem(metaclass=LSystemMeta):
         cls._queue.append(instance)
 
     @classmethod
-    def draw_all(cls, n=None):
+    def draw_all(cls, window, n=None):
         ''' Draw every instance of LSystem. '''
         for fractal in cls._instances:
-            fractal.draw()
+            fractal.draw(window)
             fractal.reset(n)
         LSystem._queue.clear()
 
@@ -158,7 +158,7 @@ class LSystem(metaclass=LSystemMeta):
             for obj in LSystem._queue.pop(0):
                 obj.vertex_list.delete()
 
-    def draw(self):
+    def draw(self, window):
         ''' Draw fractal. '''
         LSystem._queue.append(self)
         if self.start_pos is None:
@@ -336,65 +336,4 @@ def init(file='data.json'):
 
     with open(file, 'w') as f:
         json.dump(LSystem.info, f, indent=4)
-
-
-window = Window()
-
-if __name__ == '__main__':
-    init()
-
-    LSystem.draw_time = 0.1
-    LSystem.draw_all(2)
-
-    # initialize LSystem wiith every lsystem with one instance each
-    # for system in LSystem:
-    #     fractal = LSystem(system.name, 1,
-    #         iteration=3,
-    #         scale=[0.0004, 0, -50],
-    #         rotation=[0, (np.random.random()-.5)/100],
-    #         r=lambda x: 255 - x,
-    #         g=lambda x: x % 51 * 5,
-    #         b=lambda x: x // 3,
-    #         draw_time=3,
-    #         line_width=7
-    #     )
-
-    # ----------------
-    # way it should be:
-    # LSystem['iteration'] = 3
-    # LSystem['scale'] = 3
-    # or:
-    # LSystem.set(iteration=3, scale=3)
-    # ----------------
-
-    LSystem.iteration = 3
-    LSystem.scale = [0.0004, 0, -50]
-    LSystem.color = [255, 0]
-    LSystem.r = lambda x: 255 - x
-    LSystem.g = lambda x: x % 51 * 5
-    LSystem.b = lambda x: x // 3
-    LSystem.draw_time = 3
-    LSystem.line_width = 7
-
-    for fractal in LSystem['tiled_square', 'pentaplexity']:
-        fractal.scale = [0.00005, 0.002, -40]
-        fractal.rotation = [-0.000003, 0.0008]
-        fractal.color = 255.0, 0
-
-    for fractal in LSystem['levy_curve', 'sierpinski_arrowhead']:
-        fractal.iteration = 5
-
-    for fractal in LSystem:
-        fractal.start_pos = [960 * np.random.random() + 480, 540 * np.random.random() + 270]
-        fractal.rotation = [0, (np.random.random() - 0.5) / 100]
-
-        #for obj in fractal:
-        #    print(obj)
-
-        # fractal.draw()
-        # fractal.reset(3)
-    LSystem.draw_all(3)
-
-window.on_close()
-
 
